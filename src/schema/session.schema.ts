@@ -27,6 +27,7 @@ export const signUpSchema = z.object({
         .string({
           required_error: 'Confirm Password is required'
         })
+        .trim()
         .min(6, 'Password too short, should be atleas 6 chars')
     })
     .strict()

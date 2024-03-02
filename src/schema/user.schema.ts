@@ -5,11 +5,13 @@ export const baseUserSchema = z.object({
     .string({
       required_error: 'Name is required'
     })
+    .trim()
     .min(4),
   email: z
     .string({
       required_error: 'Email is required'
     })
+    .trim()
     .email('Email should be valid'),
   role: z.enum(['admin', 'client']).optional(),
   active: z.boolean().optional(),
@@ -17,6 +19,7 @@ export const baseUserSchema = z.object({
     .string({
       required_error: 'Password is required'
     })
+    .trim()
     .min(6, 'Password too short, should be atleas 6 chars')
 })
 export const createUserSchema = z.object({
@@ -26,6 +29,7 @@ export const createUserSchema = z.object({
         .string({
           required_error: 'Confirm Password is required'
         })
+        .trim()
         .min(6, 'Password too short, should be atleas 6 chars')
     })
     .strict()

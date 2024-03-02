@@ -10,11 +10,12 @@ const errorHandler = (app: Express) => {
       res: Response,
       next: NextFunction
     ) => {
+      let response: { [key: string]: any } = {}
       logger.error(error.message)
       let status = 500
       if (error instanceof ErrorResponse) {
         status = error?.statusCode || 500
-        const response = {
+        response = {
           statusCode: status,
           data: error.data,
           message: error.message || 'Internal Server Error',
@@ -24,14 +25,15 @@ const errorHandler = (app: Express) => {
         }
         return res.status(status).json(response)
       }
-      return res.status(status).json({
+      response = {
         statusCode: status,
         data: null,
         message: error.message || 'Internal Server Error',
         success: false,
         errors: error,
         stack: error.stack
-      })
+      }
+      return res.status(status).json(response)
     }
   )
 }

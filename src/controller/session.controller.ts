@@ -28,11 +28,8 @@ export const loginHandler = asyncHandler(
 
 export const signUpHandler = asyncHandler(
   async (req: Request<{}, {}, CreateuserInput['body']>, res: Response) => {
-    console.log('Body: ', req.body);
-    
-    // const user = await createUser(req.body)
-    // return res.json(new ApiResponse({ user }, 'SignUp successfull', 201))
-    return res.json(new ApiResponse({ }, 'SignUp successfull', 201))
+    const user = await createUser(req.body)
+    return res.json(new ApiResponse({ user }, 'SignUp successfull', 201))
   }
 )
 

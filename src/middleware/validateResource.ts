@@ -1,20 +1,27 @@
 import { Request, Response, NextFunction } from 'express'
 import { AnyZodObject, ZodError } from 'zod'
+import ErrorResponse from '../responses/ErrorResponse'
 
 const validate =
   (schema: AnyZodObject) =>
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      schema.parse({
+      const parsedObject = schema.parse({
         body: req.body,
         query: req.query,
         params: req.params
       })
+      if (schema.shape.body) req.body = parsedObject.body
+      if (schema.shape.query) req.query = parsedObject.query
+      if (schema.shape.params) req.params = parsedObject.params
       next()
     } catch (error: any) {
-      if (error instanceof ZodError)
-        return res.status(400).send({ error: error.errors })
-      return res.status(500).send({error: error})
+      if (error instanceof ZodError) {
+        const errors = error.errors.map(q => q.message)
+        throw new ErrorResponse(400, 'Validation Error', errors)
+        // return res.status(400).send({ errors: error })
+      }
+      return res.status(500).send({ errors: error })
     }
   }
 

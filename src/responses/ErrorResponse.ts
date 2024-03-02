@@ -3,14 +3,14 @@ class ErrorResponse extends Error {
   data: object | null
   message: string
   success: false
-  errors: any
+  errors?:  string[] | undefined
 
   constructor(
     statusCode = 500,
     message = 'Something went wrong',
-    errors = [],
+    errors: string[] = [],
     data = null,
-    stack = ''
+    stack = '',
   ) {
     super(message)
     
