@@ -1,6 +1,6 @@
 import z, { TypeOf } from 'zod'
 
-const baseUserSchema = z.object({
+export const baseUserSchema = z.object({
   name: z
     .string({
       required_error: 'Name is required'
@@ -10,23 +10,29 @@ const baseUserSchema = z.object({
     .string({
       required_error: 'Email is required'
     })
-    .email('Email should be valid')
+    .email('Email should be valid'),
+  role: z.enum(['admin', 'client']).optional(),
+  active: z.boolean().optional(),
+  password: z
+    .string({
+      required_error: 'Password is required'
+    })
+    .min(6, 'Password too short, should be atleas 6 chars')
 })
 export const createUserSchema = z.object({
-  body: baseUserSchema.extend({
-    role: z.enum(['admin', 'client']).optional(),
-    active: z.boolean().optional(),
-    password: z
-      .string({
-        required_error: 'Password is required'
-      })
-      .min(6, 'Password too short, should be atleas 6 chars'),
-    confirmPassword: z
-      .string({
-        required_error: 'Confirm Password is required'
-      })
-      .min(6, 'Password too short, should be atleas 6 chars')
-  }).strict()
+  body: baseUserSchema
+    .extend({
+      confirmPassword: z
+        .string({
+          required_error: 'Confirm Password is required'
+        })
+        .min(6, 'Password too short, should be atleas 6 chars')
+    })
+    .strict()
+    .refine(data => data.password === data.confirmPassword, {
+      message: 'Passwords do not match',
+      path: ['confirmPassword']
+    })
 })
 
 // export const createUserSchema = z.object({

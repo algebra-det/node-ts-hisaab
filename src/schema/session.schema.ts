@@ -1,24 +1,39 @@
 import z, { TypeOf } from 'zod'
-import { createUserSchema } from '../schema/user.schema'
+import { baseUserSchema } from '../schema/user.schema'
 
 export const loginSchema = z.object({
-  body: z.object({
-    email: z
-      .string({
-        required_error: 'Email is required'
+  body: z
+    .object({
+      email: z
+        .string({
+          required_error: 'Email is required'
+        })
+        .email('Email should be valid'),
+      password: z.string({
+        required_error: 'Password is required'
       })
-      .email('Email should be valid'),
-    password: z.string({
-      required_error: 'Password is required'
     })
-  }).strict()
+    .strict()
 })
 
 export const signUpSchema = z.object({
-  body: createUserSchema.shape.body.omit({
-    role: true,
-    active: true
-  }).strict()
+  body: baseUserSchema
+    .omit({
+      role: true,
+      active: true
+    })
+    .extend({
+      confirmPassword: z
+        .string({
+          required_error: 'Confirm Password is required'
+        })
+        .min(6, 'Password too short, should be atleas 6 chars')
+    })
+    .strict()
+    .refine(data => data.password === data.confirmPassword, {
+      message: 'Passwords do not match',
+      path: ['confirmPassword']
+    })
 })
 
 export type SignUpInput = TypeOf<typeof signUpSchema>
