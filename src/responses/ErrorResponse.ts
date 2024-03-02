@@ -8,19 +8,17 @@ class ErrorResponse extends Error {
   constructor(
     statusCode = 500,
     message = 'Something went wrong',
-    data = null,
     errors = [],
+    data = null,
     stack = ''
   ) {
-    console.log('message 1: ', message);
     super(message)
     
     this.statusCode = statusCode
     this.data = data
     this.message = message
-    this.success = false
     this.errors = errors
-    console.log('message 2: ', this.message);
+    this.success = false
 
     if (stack) this.stack = stack
     else Error.captureStackTrace(this, this.constructor)

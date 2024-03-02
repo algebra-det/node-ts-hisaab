@@ -29,14 +29,6 @@ export const createUserSchema = z.object({
   }).strict()
 })
 
-export const getUserSchema = baseUserSchema.extend({
-  role: z.enum(['admin', 'client']),
-  active: z.boolean(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-})
-
-export const listUserSchema = z.array(getUserSchema)
 // export const createUserSchema = z.object({
 //   body: z
 //     .object({

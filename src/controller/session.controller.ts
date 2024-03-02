@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import { createUser, validateUser } from '../service/user.service'
 import { LoginInput } from '../schema/session.schema'
-import { CreateuserInput, getUserSchema } from '../schema/user.schema'
+import { CreateuserInput } from '../schema/user.schema'
 import { signJwt } from '../utils/jwt.utils'
 import config from 'config'
 import asyncHandler from '../utils/asyncHandler'
-import ErrorResponse from '../responses/ErrorResponse'
 import ApiResponse from '../responses/ApiResponse'
 
 export const loginHandler = asyncHandler(
@@ -20,7 +19,7 @@ export const loginHandler = asyncHandler(
     })
     return res.json(
       new ApiResponse(
-        { data: user, tokens: { accessTokens, refreshTokens } },
+        { user: user, tokens: { accessTokens, refreshTokens } },
         'login successfull'
       )
     )
@@ -30,13 +29,13 @@ export const loginHandler = asyncHandler(
 export const signUpHandler = asyncHandler(
   async (req: Request<{}, {}, CreateuserInput['body']>, res: Response) => {
     const user = await createUser(req.body)
-    const parsedUser = getUserSchema.parse(user)
-    return res.json(new ApiResponse(parsedUser))
+    return res.json(new ApiResponse({ user }, 'SignUp successfull', 201))
   }
 )
 
-export const testingHandler = asyncHandler(
+export const getUserData = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    throw new ErrorResponse(400, 'hello brother')
+    const user = res.locals.user
+    return res.json(new ApiResponse({ user }))
   }
 )

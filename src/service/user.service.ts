@@ -6,18 +6,18 @@ import ErrorResponse from '../responses/ErrorResponse'
 export const createUser = async (input: SchemaDefinition<UserDocument>) => {
   const userAlreadyExists = await User.findOne({
     email: input.email
-  })
-  if (userAlreadyExists) {
-    console.log('Already exists')
+  }).lean()
+  if (userAlreadyExists)
     throw new ErrorResponse(400, 'User already exists with this email')
-  }
-  console.log('moving ahead')
   const user = await User.create(input)
-  return user
+  return omit(user.toJSON(), 'password', '__v')
 }
 
 export const getNonAdminUsers = async () => {
-  const users = await User.find({})
+  const users = await User.find(
+    { role: 'client' },
+    { password: 0, __v: 0 }
+  ).lean()
   return users
 }
 
@@ -34,5 +34,5 @@ export const validateUser = async ({
 
   const isValid = await user.comparePassword(password)
   if (!isValid) return false
-  return omit(user.toJSON(), 'password', '_v')
+  return omit(user.toJSON(), 'password', '__v')
 }

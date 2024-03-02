@@ -18,7 +18,7 @@ export const signUpSchema = z.object({
   body: createUserSchema.shape.body.omit({
     role: true,
     active: true
-  })
+  }).strict()
 })
 
 export type SignUpInput = TypeOf<typeof signUpSchema>

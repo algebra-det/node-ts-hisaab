@@ -13,18 +13,17 @@ const errorHandler = (app: Express) => {
       logger.error(error.message)
       let status = 500
       if (error instanceof ErrorResponse) {
-        console.log('is ErrorResponse', error.message)
         status = error?.statusCode || 500
-        return res.status(status).json({
+        const response = {
           statusCode: status,
           data: error.data,
           message: error.message || 'Internal Server Error',
           success: false,
           errors: error.errors,
-          stack: error.stack
-        })
+          stack: status === 500 ? error.stack : ''
+        }
+        return res.status(status).json(response)
       }
-      console.log('is Normal Error')
       return res.status(status).json({
         statusCode: status,
         data: null,
