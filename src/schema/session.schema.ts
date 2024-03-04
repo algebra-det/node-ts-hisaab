@@ -37,5 +37,11 @@ export const signUpSchema = z.object({
     })
 })
 
+export const refreshTokenSchema = z.object({
+  body: z.object({
+    refreshToken: z.string()
+  })
+})
+
 export type SignUpInput = TypeOf<typeof signUpSchema>
 export type LoginInput = TypeOf<typeof loginSchema>

@@ -11,7 +11,6 @@ const deserializeUser = (req: Request, res: Response, next: NextFunction) => {
   if (!accessTokens) return next()
 
   const { decoded } = verifyJwt(accessTokens)
-  console.log('token: ', accessTokens, decoded);
   if (decoded) {
     res.locals.user = decoded
   }
