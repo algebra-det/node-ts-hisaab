@@ -13,12 +13,12 @@ export const loginHandler = asyncHandler(
   async (req: Request<{}, {}, LoginInput['body']>, res: Response) => {
     const user = await validateUser(req.body)
     if (!user) return res.json({ error: 'Invalid Username or Password' })
-    const accessTokens = signJwt(user, 'access', {
-      expiresIn: config.get<string>('accessTokenTtl')
-    })
-    const refreshTokens = signJwt(user, 'refresh', {
-      expiresIn: config.get<string>('refreshTokenTtl')
-    })
+    const accessTokens = signJwt(user, 'access')
+    console.log('Access: ', accessTokens)
+
+    const refreshTokens = signJwt(user, 'refresh')
+    console.log('Refresh: ', refreshTokens)
+
     return res.json(
       new ApiResponse(
         { user: user, tokens: { accessTokens, refreshTokens } },
@@ -46,8 +46,6 @@ export const renewAccessTokenFromRefresh = asyncHandler(async (req, res) => {
   if (!decoded)
     throw new ErrorResponse(401, 'Refresh token not valid or is Expired')
 
-  const accessTokens = signJwt(omit(decoded as object, 'iat', 'exp'), 'access', {
-    expiresIn: config.get<string>('accessTokenTtl')
-  })
+  const accessTokens = signJwt(omit(decoded as object, 'iat', 'exp'), 'access')
   return res.json(new ApiResponse({ accessTokens }, 'Token refreshed'))
 })
