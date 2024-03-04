@@ -9,6 +9,7 @@ import logger from './utils/logger'
 
 import routes from './routes'
 import errorHandler from './utils/errorHandler'
+import ErrorResponse from './responses/ErrorResponse';
 
 const port = config.get<number>('port')
 
@@ -31,7 +32,7 @@ app.listen(port, () => {
   connect()
   routes(app)
   app.use('*', (_req, res) => {
-    throw new Error('No route found')
+    throw new ErrorResponse(404, 'No route found')
   })
   errorHandler(app)
 })
