@@ -12,7 +12,7 @@ export const createUserHandler = asyncHandler(
 )
 
 export const getAllNonAdminUsersHandler = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (_: Request, res: Response) => {
     const users = await getNonAdminUsers()
     return res.json(new ApiResponse({ users }))
   }
