@@ -34,7 +34,7 @@ export const signUpHandler = asyncHandler(
   }
 )
 
-export const getUserData = asyncHandler(async (req: Request, res: Response) => {
+export const getUserData = asyncHandler(async (_, res: Response) => {
   const user = res.locals.user
   return res.json(new ApiResponse({ user }))
 })
