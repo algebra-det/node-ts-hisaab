@@ -11,12 +11,11 @@ import { omit } from 'lodash'
 export const loginHandler = asyncHandler(
   async (req: Request<{}, {}, LoginInput['body']>, res: Response) => {
     const user = await validateUser(req.body)
-    if (!user) return res.json({ error: 'Invalid Username or Password' })
+    if (!user) throw new ErrorResponse(401, 'Invalid email or password')
+
     const accessTokens = signJwt(user, 'access')
-    console.log('Access: ', accessTokens)
 
     const refreshTokens = signJwt(user, 'refresh')
-    console.log('Refresh: ', refreshTokens)
 
     return res.json(
       new ApiResponse(

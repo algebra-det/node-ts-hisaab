@@ -13,7 +13,7 @@ const asyncHandler = (
 ) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(requestHandler(req, res, next)).catch(err => {
-      console.log('Error Occured: ', err);
+      // console.log('Error Occured: ', err);
       next(err)
     })
   }
