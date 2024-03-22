@@ -14,7 +14,6 @@ export const loginHandler = asyncHandler(
     if (!user) throw new ErrorResponse(401, 'Invalid email or password')
 
     const accessTokens = signJwt(user, 'access')
-
     const refreshTokens = signJwt(user, 'refresh')
 
     return res.json(
